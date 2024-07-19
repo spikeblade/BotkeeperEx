@@ -35,7 +35,7 @@ export const getTransactionsBetween = async (min: number, max: number,): Promise
 
 export const newTransaction = async (data: Transaction): Promise<any> => {
     const { type, accountId, amount, cost } = data
-    const balance = await accounts.getBalanceOfAccount(accountId);
+    const {balance} = await accounts.getBalanceOfAccount(accountId);
     let total = 0
     if (type === 'credit') {
         total = balance + valuesUtils.normalized(amount)
@@ -43,8 +43,8 @@ export const newTransaction = async (data: Transaction): Promise<any> => {
         total = balance - valuesUtils.normalized(cost)
     }
     if (total >= 0) {
-        await accounts.updateBalance(accountId, total)
         const resTransaction = await transaction.create(data)
+        await accounts.updateBalance(accountId, total)
         return resTransaction
     }
     return 'error not enough money for this transaction'

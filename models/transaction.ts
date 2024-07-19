@@ -29,7 +29,7 @@ transaction.init(
       type: DataTypes.INTEGER
     },
     cost: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.FLOAT
     },
     amount: {

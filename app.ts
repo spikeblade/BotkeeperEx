@@ -38,7 +38,7 @@ app.get('/transactions', async function (_: Request, res: Response) {
 app.post('/transaction', async function (req: Request, res: Response) {
   try {
     const result = await transactions.newTransaction(req.body);
-    if(typeof(result === String)){
+    if(result === 'error not enough money for this transaction'){
       return res.status(409).send({
         code: 409,
         message: result,
