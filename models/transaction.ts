@@ -1,34 +1,35 @@
-import { Model } from 'sequelize'
-module.exports = (sequelize: any, DataTypes: { INTEGER: any, STRING: any, NOW: any, DATE: any, FLOAT: any }) => {
-  class transaction extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/db` file will call this method automatically.
-     */
-    static associate (models: any): any {
-      transaction.belongsTo(models.account, {
-        foreignKey: 'accountId'
-      })
-    }
-  }
-  transaction.init({
+import { DataTypes, Model } from 'sequelize';
+import sequelize from './index';
+import { type Transaction } from '../src/interfaces/IAccountTransactionType'
+
+class transaction
+  extends Model<Transaction, Transaction>
+  implements Transaction {
+  public type!: any
+  public accountId!: number
+  public cost!: number
+  public amount!: number
+  public dateTime!: Date
+}
+
+transaction.init(
+  {
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    accountId: {
-      allowNull: false,
-      type: DataTypes.INTEGER
-    },
     type: {
       allowNull: false,
       type: DataTypes.STRING
     },
+    accountId: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    },
     cost: {
-      allowNull: true,
+      allowNull: false,
       type: DataTypes.FLOAT
     },
     amount: {
@@ -37,14 +38,17 @@ module.exports = (sequelize: any, DataTypes: { INTEGER: any, STRING: any, NOW: a
     },
     dateTime: {
       allowNull: false,
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
+      defaultValue: DataTypes.NOW,
+      type: DataTypes.DATE
     }
-  }, {
+
+  },
+  {
+    sequelize,
+    modelName: 'transaction',
     tableName: 'transactions',
     timestamps: false,
-    sequelize
-  })
-  return transaction
-}
+  },
+);
 
+export { transaction }
